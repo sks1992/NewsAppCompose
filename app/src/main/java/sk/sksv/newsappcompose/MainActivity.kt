@@ -28,14 +28,14 @@ class MainActivity : ComponentActivity() {
                 viewModel.splashCondition
             }
         }
-            enableEdgeToEdge()
-            setContent {
-                NewsAppComposeTheme {
-                    Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
-                        val startDestination = viewModel.startDestination
-                        NavGraph(startDestination = startDestination)
-                    }
+        enableEdgeToEdge()
+        setContent {
+            NewsAppComposeTheme {
+                Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
+                    val startDestination = viewModel.startDestination
+                    NavGraph(startDestination = startDestination)
                 }
             }
         }
     }
+}

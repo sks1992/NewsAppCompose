@@ -9,7 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import sk.sksv.newsappcompose.domain.usecases.AppEntryUseCases
+import sk.sksv.newsappcompose.domain.usecases.app_entry.AppEntryUseCases
 import sk.sksv.newsappcompose.presentation.navgraph.Route
 import javax.inject.Inject
 
@@ -25,15 +25,13 @@ class MainViewModel @Inject constructor(
 
     init {
         appEntryUseCases.readAppEntry().onEach { shouldStartFromHomeScreen ->
-            if (shouldStartFromHomeScreen) {
-                startDestination = Route.NewsNavigation.route
+            startDestination = if (shouldStartFromHomeScreen) {
+                Route.NewsNavigation.route
             } else {
-                startDestination = Route.AppStartNavigation.route
+                Route.AppStartNavigation.route
             }
             delay(300)
             splashCondition = false
         }.launchIn(viewModelScope)
     }
-
-
 }

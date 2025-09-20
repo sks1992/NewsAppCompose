@@ -1,4 +1,4 @@
-package sk.sksv.newsappcompose.domain.usecases
+package sk.sksv.newsappcompose.domain.usecases.app_entry
 
 import sk.sksv.newsappcompose.domain.manager.LocalUserManager
 
