@@ -24,7 +24,7 @@ import sk.sksv.newsappcompose.presentation.onbording.components.PageIndicator
 import sk.sksv.newsappcompose.utils.Dimens
 
 @Composable
-fun OnBoardingScreen(modifier: Modifier = Modifier) {
+fun OnBoardingScreen(event: (OnBoardingEvent) -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
         val pagerState = rememberPagerState(initialPage = 0) {
             pages.size
@@ -44,9 +44,9 @@ fun OnBoardingScreen(modifier: Modifier = Modifier) {
             OnBoardingPage(page = pages[index])
         }
 
-        Spacer(modifier = modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(1f))
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = Dimens.MediumPadding30)
                 .navigationBarsPadding(),
@@ -73,8 +73,8 @@ fun OnBoardingScreen(modifier: Modifier = Modifier) {
                 }
                 NewsButton(text = buttonState.value[1], onClick = {
                     scope.launch {
-                        if (pagerState.currentPage == 3) {
-                            //todo:Navigate to Home Screen
+                        if (pagerState.currentPage == 2) {
+                            event(OnBoardingEvent.SaveAppEntry)
                         } else {
                             pagerState.animateScrollToPage(
                                 page = pagerState.currentPage + 1
