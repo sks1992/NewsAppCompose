@@ -18,5 +18,6 @@ object Dimens {
     val SmallIconSize11 = 11.dp
     val Size150 = 150.dp
     val Size30 = 30.dp
+    val Size248 = 248.dp
     val IconSize = 24.dp
 }

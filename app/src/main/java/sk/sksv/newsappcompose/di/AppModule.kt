@@ -1,12 +1,18 @@
 package sk.sksv.newsappcompose.di
 
 import android.app.Application
+import android.util.Log
+import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import sk.sksv.newsappcompose.data.local.NewsDao
+import sk.sksv.newsappcompose.data.local.NewsDatabase
+import sk.sksv.newsappcompose.data.local.NewsTypeConvertor
 import sk.sksv.newsappcompose.data.manager_impl.LocalUserManagerImpl
 import sk.sksv.newsappcompose.data.remote.NewsApi
 import sk.sksv.newsappcompose.data.repository_impl.NewsRepositoryImpl
@@ -15,8 +21,13 @@ import sk.sksv.newsappcompose.domain.repository.NewsRepository
 import sk.sksv.newsappcompose.domain.usecases.app_entry.AppEntryUseCases
 import sk.sksv.newsappcompose.domain.usecases.app_entry.ReadAppEntry
 import sk.sksv.newsappcompose.domain.usecases.app_entry.SaveAppEntry
+import sk.sksv.newsappcompose.domain.usecases.news.DeleteArticle
 import sk.sksv.newsappcompose.domain.usecases.news.GetNews
 import sk.sksv.newsappcompose.domain.usecases.news.NewsUseCases
+import sk.sksv.newsappcompose.domain.usecases.news.SearchNews
+import sk.sksv.newsappcompose.domain.usecases.news.SelectArticle
+import sk.sksv.newsappcompose.domain.usecases.news.SelectArticles
+import sk.sksv.newsappcompose.domain.usecases.news.UpsertArticle
 import sk.sksv.newsappcompose.utils.Constants
 import javax.inject.Singleton
 
@@ -48,11 +59,37 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNewsRepository(newsApi: NewsApi): NewsRepository = NewsRepositoryImpl(newsApi)
+    fun provideNewsRepository(newsApi: NewsApi, newsDao: NewsDao): NewsRepository =
+        NewsRepositoryImpl(newsApi, newsDao)
+
+    @Provides
+    @Singleton
+    fun provideNewsDatabase(application: Application): NewsDatabase {
+        val passphrase = Constants.DATABASE_PASSWORD.toByteArray()
+        Log.d("SKS", "provideNewsDatabase: $passphrase")
+        val factory = SupportOpenHelperFactory(passphrase)
+        return Room.databaseBuilder(
+            context = application,
+            klass = NewsDatabase::class.java,
+            name = Constants.NEWS_DATABASE_NAME
+        ).openHelperFactory(factory)
+            .addTypeConverter(NewsTypeConvertor())
+            .fallbackToDestructiveMigration(false).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNewsDao(newsDatabase: NewsDatabase) = newsDatabase.newsDao
+
 
     @Provides
     @Singleton
     fun provideNewsUseCases(newsRepository: NewsRepository) = NewsUseCases(
-        getNews = GetNews(newsRepository)
+        getNews = GetNews(newsRepository),
+        searchNews = SearchNews(newsRepository),
+        upsertArticle = UpsertArticle(newsRepository),
+        deleteArticle = DeleteArticle(newsRepository),
+        selectArticles = SelectArticles(newsRepository),
+        selectArticle = SelectArticle(newsRepository)
     )
 }

@@ -1,13 +1,19 @@
 package sk.sksv.newsappcompose.domain.model
 
 
+import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
+@Entity
 data class Article(
     @SerializedName("author")
     val author: String?,
     @SerializedName("content")
-    val content: String?,
+    val content: String,
     @SerializedName("description")
     val description: String?,
     @SerializedName("publishedAt")
@@ -16,8 +22,8 @@ data class Article(
     val source: Source,
     @SerializedName("title")
     val title: String,
-    @SerializedName("url")
-    val url: String?,
+    @PrimaryKey
+    val url: String,
     @SerializedName("urlToImage")
     val urlToImage: String?
-)
+) : Parcelable

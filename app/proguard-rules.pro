@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# SQLCipher
+-keep class net.zetetic.database.sqlcipher.** { *; }
+-keep class net.zetetic.database.sqlcipher.SQLiteConnection { nativeOpen(...); }

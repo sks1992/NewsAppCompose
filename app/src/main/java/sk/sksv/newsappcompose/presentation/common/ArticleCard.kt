@@ -43,8 +43,8 @@ fun ArticleCard(modifier: Modifier = Modifier, article: Article, onclick: () -> 
                 .clip(MaterialTheme.shapes.medium),
             model = ImageRequest.Builder(context).data(article.urlToImage).build(),
             contentDescription = null,
-            placeholder = painterResource(id = R.drawable.ic_close),
-            error = painterResource(id = R.drawable.ic_close),
+            placeholder = painterResource(id = R.drawable.ic_downloading),
+            error = painterResource(id = R.drawable.ic_downloading),
             contentScale = ContentScale.Crop
         )
         Column(

@@ -25,14 +25,13 @@ import sk.sksv.newsappcompose.R
 import sk.sksv.newsappcompose.domain.model.Article
 import sk.sksv.newsappcompose.presentation.common.ArticlesList
 import sk.sksv.newsappcompose.presentation.common.SearchBar
-import sk.sksv.newsappcompose.presentation.navgraph.Route
 import sk.sksv.newsappcompose.utils.Dimens
 
 @Composable
 fun HomeScreen(
     articles: LazyPagingItems<Article>,
-    navigate: (String) -> Unit,
-    modifier: Modifier = Modifier
+    navigateToSearch: () -> Unit,
+    navigateToDetail: (Article) -> Unit,
 ) {
     val titles by remember {
         derivedStateOf {
@@ -50,7 +49,7 @@ fun HomeScreen(
     }
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(top = Dimens.MediumPadding24)
             .statusBarsPadding()
@@ -63,20 +62,20 @@ fun HomeScreen(
                 .height(30.dp)
                 .padding(horizontal = Dimens.MediumPadding24)
         )
-        Spacer(modifier = modifier.height(Dimens.MediumPadding24))
+        Spacer(modifier = Modifier.height(Dimens.MediumPadding24))
 
         SearchBar(
-            modifier = modifier
+            modifier = Modifier
                 .padding(horizontal = Dimens.MediumPadding24),
             text = "", onValueChange = {}, readOnly = true, onClick = {
-                navigate(Route.SearchScreen.route)
+                navigateToSearch()
             }, onSearch = {})
 
-        Spacer(modifier = modifier.height(Dimens.MediumPadding24))
+        Spacer(modifier = Modifier.height(Dimens.MediumPadding24))
 
         Text(
             text = titles,
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = Dimens.MediumPadding24)
                 .basicMarquee(),
@@ -84,15 +83,13 @@ fun HomeScreen(
             color = colorResource(id = R.color.placeholder)
         )
 
-        Spacer(modifier = modifier.height(Dimens.MediumPadding24))
+        Spacer(modifier = Modifier.height(Dimens.MediumPadding24))
 
         ArticlesList(
-            modifier = modifier.padding(horizontal = Dimens.ExtraSmallPadding6),
+            modifier = Modifier.padding(horizontal = Dimens.ExtraSmallPadding6),
             articles = articles,
             onClick = {
-                navigate(Route.DetailsScreen.route)
+                navigateToDetail(it)
             })
     }
-
-
 }

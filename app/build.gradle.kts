@@ -92,6 +92,10 @@ dependencies {
     implementation(libs.room.ktx) // Kotlin extensions and coroutines support for Room
     implementation(libs.room.paging) // Paging integration with Room
     ksp(libs.room.compiler) // Room code generation (annotation processor)
+    
+    // SQLCipher for database encryption
+    implementation("net.zetetic:sqlcipher-android:4.5.4")
+    implementation("androidx.sqlite:sqlite:2.4.0")
 
     // Testing
     testImplementation(libs.junit) // Local unit tests
