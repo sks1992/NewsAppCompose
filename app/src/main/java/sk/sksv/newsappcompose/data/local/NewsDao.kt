@@ -23,4 +23,6 @@ interface NewsDao {
     @Query("SELECT * FROM Article WHERE url=:url")
     suspend fun getArticle(url: String): Article?
 
+    @Query("SELECT 1")
+    suspend fun checkDatabaseReady(): Int
 }

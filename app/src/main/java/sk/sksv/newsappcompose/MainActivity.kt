@@ -7,7 +7,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
@@ -25,15 +28,24 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         installSplashScreen().apply {
             setKeepOnScreenCondition {
-                viewModel.splashCondition
+                !viewModel.databaseReady || viewModel.splashCondition
             }
         }
         enableEdgeToEdge()
         setContent {
             NewsAppComposeTheme {
-                Box(modifier = Modifier.background(color = MaterialTheme.colorScheme.background)) {
-                    val startDestination = viewModel.startDestination
-                    NavGraph(startDestination = startDestination)
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.background)) {
+                    if (viewModel.databaseReady) {
+                        val startDestination = viewModel.startDestination
+                        NavGraph(startDestination = startDestination)
+                    } else {
+                        // Show progress indicator while checking database
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
                 }
             }
         }
