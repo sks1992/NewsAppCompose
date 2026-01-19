@@ -59,14 +59,17 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNewsRepository(newsApi: NewsApi, newsDao: NewsDao): NewsRepository =
-        NewsRepositoryImpl(newsApi, newsDao)
+    fun provideNewsRepository(
+        newsApi: NewsApi,
+        newsDao: NewsDao,
+        application: Application
+    ): NewsRepository =
+        NewsRepositoryImpl(newsApi, newsDao, application)
 
     @Provides
     @Singleton
     fun provideNewsDatabase(application: Application): NewsDatabase {
         val passphrase = Constants.DATABASE_PASSWORD.toByteArray()
-        Log.d("SKS", "provideNewsDatabase: $passphrase")
         val factory = SupportOpenHelperFactory(passphrase)
         return Room.databaseBuilder(
             context = application,
@@ -74,7 +77,8 @@ object AppModule {
             name = Constants.NEWS_DATABASE_NAME
         ).openHelperFactory(factory)
             .addTypeConverter(NewsTypeConvertor())
-            .fallbackToDestructiveMigration(false).build()
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides
@@ -90,6 +94,7 @@ object AppModule {
         upsertArticle = UpsertArticle(newsRepository),
         deleteArticle = DeleteArticle(newsRepository),
         selectArticles = SelectArticles(newsRepository),
-        selectArticle = SelectArticle(newsRepository)
+        selectArticle = SelectArticle(newsRepository),
+        restoreBackup = sk.sksv.newsappcompose.domain.usecases.news.RestoreBackup(newsRepository)
     )
 }

@@ -15,5 +15,7 @@ interface NewsRepository {
     fun selectArticles(): Flow<List<Article>>
 
     suspend fun selectOneArticle(url: String): Article?
+    
+    suspend fun restoreBackup()
 
 }
