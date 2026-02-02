@@ -166,3 +166,4 @@ If you previously shipped the app with a hardcoded password (e.g., `"12345"`), e
 - Ensure `DATABASE_PASSWORD_FALLBACK` is in `local.properties` (project root)
 - Ensure `buildConfig = true` in `buildFeatures` in `app/build.gradle.kts`
 - Rebuild the project after adding the property
+  
