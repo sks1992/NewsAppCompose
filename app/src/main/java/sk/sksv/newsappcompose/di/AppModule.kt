@@ -1,6 +1,7 @@
 package sk.sksv.newsappcompose.di
 
 import android.app.Application
+import android.util.Log
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -13,11 +14,9 @@ import sk.sksv.newsappcompose.data.local.NewsDao
 import sk.sksv.newsappcompose.data.local.NewsDatabase
 import sk.sksv.newsappcompose.data.local.NewsTypeConvertor
 import sk.sksv.newsappcompose.data.manager_impl.LocalUserManagerImpl
-import sk.sksv.newsappcompose.data.manager_impl.SecurePassphraseManagerImpl
 import sk.sksv.newsappcompose.data.remote.NewsApi
 import sk.sksv.newsappcompose.data.repository_impl.NewsRepositoryImpl
 import sk.sksv.newsappcompose.domain.manager.LocalUserManager
-import sk.sksv.newsappcompose.domain.manager.SecurePassphraseManager
 import sk.sksv.newsappcompose.domain.repository.NewsRepository
 import sk.sksv.newsappcompose.domain.usecases.app_entry.AppEntryUseCases
 import sk.sksv.newsappcompose.domain.usecases.app_entry.ReadAppEntry
@@ -60,18 +59,17 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNewsRepository(newsApi: NewsApi, newsDao: NewsDao): NewsRepository =
-        NewsRepositoryImpl(newsApi, newsDao)
+    fun provideNewsRepository(
+        newsApi: NewsApi,
+        newsDao: NewsDao,
+        application: Application
+    ): NewsRepository =
+        NewsRepositoryImpl(newsApi, newsDao, application)
 
     @Provides
     @Singleton
-    fun provideSecurePassphraseManager(application: Application): SecurePassphraseManager =
-        SecurePassphraseManagerImpl(application)
-
-    @Provides
-    @Singleton
-    fun provideNewsDatabase(application: Application, securePassphraseManager: SecurePassphraseManager): NewsDatabase {
-        val passphrase = securePassphraseManager.getPassphrase()
+    fun provideNewsDatabase(application: Application): NewsDatabase {
+        val passphrase = Constants.DATABASE_PASSWORD.toByteArray()
         val factory = SupportOpenHelperFactory(passphrase)
         return Room.databaseBuilder(
             context = application,
@@ -79,7 +77,8 @@ object AppModule {
             name = Constants.NEWS_DATABASE_NAME
         ).openHelperFactory(factory)
             .addTypeConverter(NewsTypeConvertor())
-            .fallbackToDestructiveMigration(false).build()
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides
@@ -95,6 +94,7 @@ object AppModule {
         upsertArticle = UpsertArticle(newsRepository),
         deleteArticle = DeleteArticle(newsRepository),
         selectArticles = SelectArticles(newsRepository),
-        selectArticle = SelectArticle(newsRepository)
+        selectArticle = SelectArticle(newsRepository),
+        restoreBackup = sk.sksv.newsappcompose.domain.usecases.news.RestoreBackup(newsRepository)
     )
 }

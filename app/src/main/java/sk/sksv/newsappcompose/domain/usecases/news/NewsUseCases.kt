@@ -6,5 +6,6 @@ data class NewsUseCases(
     val upsertArticle: UpsertArticle,
     val deleteArticle: DeleteArticle,
     val selectArticles: SelectArticles,
-    val selectArticle: SelectArticle
+    val selectArticle: SelectArticle,
+    val restoreBackup: RestoreBackup
 )

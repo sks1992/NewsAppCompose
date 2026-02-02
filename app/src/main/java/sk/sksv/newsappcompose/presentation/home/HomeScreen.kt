@@ -27,6 +27,7 @@ import sk.sksv.newsappcompose.presentation.common.ArticlesList
 import sk.sksv.newsappcompose.presentation.common.SearchBar
 import sk.sksv.newsappcompose.utils.Dimens
 
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     articles: LazyPagingItems<Article>,

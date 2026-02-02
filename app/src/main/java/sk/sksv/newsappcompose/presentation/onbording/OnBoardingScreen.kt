@@ -23,12 +23,12 @@ import sk.sksv.newsappcompose.presentation.onbording.components.OnBoardingPage
 import sk.sksv.newsappcompose.presentation.onbording.components.PageIndicator
 import sk.sksv.newsappcompose.utils.Dimens
 
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun OnBoardingScreen(event: (OnBoardingEvent) -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
-        val pagerState = rememberPagerState(initialPage = 0) {
-            pages.size
-        }
+        val pagerState = rememberPagerState(initialPage = 0)
+        
         val buttonState = remember {
             derivedStateOf {
                 when (pagerState.currentPage) {
@@ -40,7 +40,7 @@ fun OnBoardingScreen(event: (OnBoardingEvent) -> Unit) {
                 }
             }
         }
-        HorizontalPager(state = pagerState) { index ->
+        HorizontalPager(state = pagerState, pageCount = pages.size) { index ->
             OnBoardingPage(page = pages[index])
         }
 

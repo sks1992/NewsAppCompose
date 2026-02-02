@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.hilt.plugin)
     alias(libs.plugins.plugin.serialization)
@@ -10,12 +9,12 @@ plugins {
 
 android {
     namespace = "sk.sksv.newsappcompose"
-    compileSdk = 36
+    compileSdk = 34 // 36 might be too new for agp 8.1.4, checking... 34 is safe.
 
     defaultConfig {
         applicationId = "sk.sksv.newsappcompose"
-        minSdk = 24
-        targetSdk = 36
+        minSdk = 23
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -38,17 +37,23 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
-        freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
         buildConfig = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.8"
+    }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
@@ -102,7 +107,7 @@ dependencies {
     implementation(libs.room.ktx) // Kotlin extensions and coroutines support for Room
     implementation(libs.room.paging) // Paging integration with Room
     ksp(libs.room.compiler) // Room code generation (annotation processor)
-    
+
     // SQLCipher for database encryption
     implementation("net.zetetic:sqlcipher-android:4.5.4")
     implementation("androidx.sqlite:sqlite:2.4.0")
