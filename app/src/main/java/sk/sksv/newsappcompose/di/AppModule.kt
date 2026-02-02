@@ -13,6 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import sk.sksv.newsappcompose.data.local.NewsDao
 import sk.sksv.newsappcompose.data.local.NewsDatabase
 import sk.sksv.newsappcompose.data.local.NewsTypeConvertor
+import sk.sksv.newsappcompose.data.local.SQLCipherHook
 import sk.sksv.newsappcompose.data.manager_impl.LocalUserManagerImpl
 import sk.sksv.newsappcompose.data.remote.NewsApi
 import sk.sksv.newsappcompose.data.repository_impl.NewsRepositoryImpl
@@ -72,7 +73,16 @@ object AppModule {
         // Use constant password - same for all devices
         // This allows copying database files between devices
         val passphrase = Constants.DATABASE_PASSWORD.toByteArray(Charsets.UTF_8)
-        val factory = SupportOpenHelperFactory(passphrase)
+        
+        // Create hook for device-specific SQLCipher configuration
+        // Samsung devices: kdf_iter = 4000 (reduced iterations for better performance)
+        // OnePlus devices: default SQLCipher configuration
+        val hook = SQLCipherHook()
+        
+        // SupportOpenHelperFactory constructor: (passphrase, hook, clearPassphrase)
+        // clearPassphrase = true means the passphrase will be cleared from memory after use
+        val factory = SupportOpenHelperFactory(passphrase, hook, true)
+        
         return Room.databaseBuilder(
             context = application,
             klass = NewsDatabase::class.java,
