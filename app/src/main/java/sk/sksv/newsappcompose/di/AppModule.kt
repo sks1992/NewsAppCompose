@@ -1,7 +1,6 @@
 package sk.sksv.newsappcompose.di
 
 import android.app.Application
-import android.util.Log
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -14,9 +13,11 @@ import sk.sksv.newsappcompose.data.local.NewsDao
 import sk.sksv.newsappcompose.data.local.NewsDatabase
 import sk.sksv.newsappcompose.data.local.NewsTypeConvertor
 import sk.sksv.newsappcompose.data.manager_impl.LocalUserManagerImpl
+import sk.sksv.newsappcompose.data.manager_impl.SecurePassphraseManagerImpl
 import sk.sksv.newsappcompose.data.remote.NewsApi
 import sk.sksv.newsappcompose.data.repository_impl.NewsRepositoryImpl
 import sk.sksv.newsappcompose.domain.manager.LocalUserManager
+import sk.sksv.newsappcompose.domain.manager.SecurePassphraseManager
 import sk.sksv.newsappcompose.domain.repository.NewsRepository
 import sk.sksv.newsappcompose.domain.usecases.app_entry.AppEntryUseCases
 import sk.sksv.newsappcompose.domain.usecases.app_entry.ReadAppEntry
@@ -64,9 +65,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNewsDatabase(application: Application): NewsDatabase {
-        val passphrase = Constants.DATABASE_PASSWORD.toByteArray()
-        Log.d("SKS", "provideNewsDatabase: $passphrase")
+    fun provideSecurePassphraseManager(application: Application): SecurePassphraseManager =
+        SecurePassphraseManagerImpl(application)
+
+    @Provides
+    @Singleton
+    fun provideNewsDatabase(application: Application, securePassphraseManager: SecurePassphraseManager): NewsDatabase {
+        val passphrase = securePassphraseManager.getPassphrase()
         val factory = SupportOpenHelperFactory(passphrase)
         return Room.databaseBuilder(
             context = application,

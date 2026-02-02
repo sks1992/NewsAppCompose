@@ -20,6 +20,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Optional: For migration from hardcoded password. Add to local.properties:
+        // DATABASE_PASSWORD_FALLBACK=your_old_password
+        // Remove after one release cycle.
+        val fallback = project.findProperty("DATABASE_PASSWORD_FALLBACK") as? String ?: ""
+        buildConfigField("String", "DATABASE_PASSWORD_FALLBACK", "\"$fallback\"")
     }
 
     buildTypes {
@@ -41,6 +47,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -76,6 +83,9 @@ dependencies {
 
     // Datastore
     implementation(libs.androidx.datastore.preferences) // Key-value storage using DataStore Preferences
+
+    // Security - EncryptedSharedPreferences for secure credential storage (Android Keystore)
+    implementation(libs.androidx.security.crypto)
 
     // Compose Foundation
     implementation(libs.androidx.compose.foundation) // Foundational Compose building blocks
