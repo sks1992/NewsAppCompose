@@ -89,9 +89,6 @@ dependencies {
     // Datastore
     implementation(libs.androidx.datastore.preferences) // Key-value storage using DataStore Preferences
 
-    // Security - EncryptedSharedPreferences for secure credential storage (Android Keystore)
-    implementation(libs.androidx.security.crypto)
-
     // Compose Foundation
     implementation(libs.androidx.compose.foundation) // Foundational Compose building blocks
 

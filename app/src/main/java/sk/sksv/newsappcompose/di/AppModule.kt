@@ -69,7 +69,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideNewsDatabase(application: Application): NewsDatabase {
-        val passphrase = Constants.DATABASE_PASSWORD.toByteArray()
+        // Use constant password - same for all devices
+        // This allows copying database files between devices
+        val passphrase = Constants.DATABASE_PASSWORD.toByteArray(Charsets.UTF_8)
         val factory = SupportOpenHelperFactory(passphrase)
         return Room.databaseBuilder(
             context = application,
